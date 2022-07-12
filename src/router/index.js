@@ -1,10 +1,22 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import NotFound from '../views/NotFound.vue'
+import TimeCountdown from '../views/TimeCountdown'
+
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/',
+    name: 'root',
+    redirect: '/time-countdown',
+  },
+  {
+    path: '/time-countdown',
+    name: 'main-page',
+    component: TimeCountdown,
+  },
   {
     path: '*',
     name: 'not-found',
