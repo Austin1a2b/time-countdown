@@ -87,9 +87,9 @@ export default {
       type: Object,
       default: () => {
         return {
-          focusTime: "25",
-          shortBreakTime: "05",
-          longBreakTime: "30",
+          focusTime: 25,
+          shortBreakTime: 5,
+          longBreakTime: 30,
         };
       },
     },
@@ -99,8 +99,6 @@ export default {
     saveSetting(e) {
       const form = e.target;
       const formData = new FormData(form);
-      console.log("下一行 我要的");
-      console.log(Object.fromEntries(formData));
       this.$emit("after-saveSetting", Object.fromEntries(formData));
       $("#modal-set-time").modal("hide");
     },
