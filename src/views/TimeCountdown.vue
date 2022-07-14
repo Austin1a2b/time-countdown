@@ -1,63 +1,113 @@
 <template>
-  <div class="main">
-    <div class="d-flex justify-content-around change-time-countdown">
-      <button
-        type="button"
-        class="btn btn-outline-info"
-        @click="chooseCountdown(countdownSetting.focusTime, 'focus')"
-      >
-        專注時間
-      </button>
-      <button
-        type="button"
-        class="btn btn-outline-info"
-        @click="chooseCountdown(countdownSetting.shortBreakTime, 'shortBreak')"
-      >
-        小休息時間
-      </button>
-      <button
-        type="button"
-        class="btn btn-outline-info"
-        @click="chooseCountdown(countdownSetting.longBreakTime, 'longBreak')"
-      >
-        長休息時間
-      </button>
-    </div>
-    <div class="display-countdown">
-      {{ countdownMinutes }}:{{ countdownSeconds | changeSecondDisplay }}
-    </div>
-    <div class="d-flex justify-content-around">
-      <button
-        @click.stop.prevent="startCountdown"
-        v-if="countdownState === 'pause'"
-      >
-        開始
-      </button>
-      <button @click.stop.prevent="pauseCountdown(setIntervalId)" v-else>
-        暫停
-      </button>
-      <TimeSettingModal
-        :countdown-setting="countdownSetting"
-        @after-saveSetting="afterSaveSetting"
-      />
-    </div>
-
-    <div>專注次數 {{ times }}</div>
-
-    <div class="task-wrapper mt-4">
-      <div class="list-head d-flex justify-content-around">
-        <div class="task-head">待辦事項列表</div>
-        <div class="setting-task">設定</div>
+  <div class="body">
+    <div class="main">
+      <div class="d-flex justify-content-around change-time-countdown">
+        <button
+          type="button"
+          class="btn btn-outline-info"
+          @click="chooseCountdown(countdownSetting.focusTime, 'focus')"
+        >
+          專注時間
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-info"
+          @click="
+            chooseCountdown(countdownSetting.shortBreakTime, 'shortBreak')
+          "
+        >
+          小休息時間
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-info"
+          @click="chooseCountdown(countdownSetting.longBreakTime, 'longBreak')"
+        >
+          長休息時間
+        </button>
+      </div>
+      <div class="display-countdown">
+        {{ countdownMinutes }}:{{ countdownSeconds | changeSecondDisplay }}
+      </div>
+      <div class="d-flex justify-content-around">
+        <button
+          @click.stop.prevent="startCountdown"
+          v-if="countdownState === 'pause'"
+        >
+          開始
+        </button>
+        <button @click.stop.prevent="pauseCountdown(setIntervalId)" v-else>
+          暫停
+        </button>
+        <TimeSettingModal
+          :countdown-setting="countdownSetting"
+          @after-saveSetting="afterSaveSetting"
+        />
       </div>
 
-      <div class="task-list mt-2">
-        <ul>
-          <li class="list-group-item" v-for="task in tasks" :key="task.id">
-            <!--  <li class="list-group-item "   -->
-            <input type="checkbox" />
-            {{ task.title }}
-          </li>
-        </ul>
+      <div>專注次數 {{ times }}</div>
+
+      <!-- 清單表頭 -->
+      <div class="tasks-wrapper mt-4">
+        <div class="list-head d-flex justify-content-between">
+          <div class="task-head">待辦事項列表</div>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="manage-task"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              管理列表
+            </button>
+            <div class="dropdown-menu" aria-labelledby="manage-task">
+              <button class="dropdown-item">刪除所有待辦</button>
+              <button class="dropdown-item">清除所有記數</button>
+              <button class="dropdown-item"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-list mt-2" v-for="task in tasks" :key="task.id">
+          <!-- 列表 最外層標題  -->
+          <div class="d-flex justify-content-between">
+            <div>
+              <input type="checkbox" name="" />
+              <span>{{ task.title }}</span>
+            </div>
+            <div>
+              <span>後續要補上數字? / ? </span>
+              <span for="task-setting" @click="toggleSetting(task.id)"
+                >設定</span
+              >
+            </div>
+          </div>
+          <!-- 設定內容 -->
+          <form class="task-toggle" v-if="task.id === clickId">
+            <!-- title -->
+            <span> 待辦事項:</span>
+            <input type="text" v-model="task.title" />
+            <!-- 計次 -->
+            <div>
+              <p>已使用/預計需要 幾個番茄時鐘</p>
+              <input type="number" v-model="times" />
+              <span> / </span>
+              <input type="number" min="1" />
+            </div>
+            <!-- note -->
+            <div>
+              <div>註解</div>
+              <textarea type="text" name="note" id="" />
+            </div>
+            <!-- 按鈕 -->
+            <div class="d-flex justify-content-end">
+              <button class="mr-4" @click="toggleSetting('close')">取消</button>
+              <button type="submit" class="mr-2 btn btn-primary">確認</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -101,6 +151,7 @@ export default {
       times: 1,
       countdownMode: "focus",
       setIntervalId: -1,
+      clickId: 1,
     };
   },
   methods: {
@@ -147,6 +198,9 @@ export default {
         this.chooseCountdown(this.countdownSetting.focusTime, "focus");
       }
     },
+    toggleSetting(taskid) {
+      this.clickId = taskid;
+    },
   },
   // 原本 預計 用 filters 功能 讓 秒數=0 ; 回傳 00
   // 後續想到 可以在 倒數計時的功能裡面 達成這項功能
@@ -161,10 +215,15 @@ export default {
 </script>
 
 <style>
+.body {
+  background-color: brown;
+}
+
 .main {
-  margin: 5% auto 0;
+  margin: 0 auto;
   width: 400px;
 }
+
 .display-countdown {
   width: 100%;
   height: 30%;
@@ -172,4 +231,10 @@ export default {
   font-weight: bold;
   text-align: center;
 }
+
+.task-list {
+  border: 1px solid black;
+  margin-top: 2px;
+}
 </style>
+
