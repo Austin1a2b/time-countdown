@@ -27,7 +27,8 @@
         </button>
       </div>
       <div class="display-countdown">
-        {{ countdownMinutes }}:{{ countdownSeconds | changeSecondDisplay }}
+        {{ countdownMinutes | changeNumberDisplay }}:
+        {{ countdownSeconds | changeNumberDisplay }}
       </div>
       <div class="d-flex justify-content-around">
         <button
@@ -63,7 +64,9 @@
               管理列表
             </button>
             <div class="dropdown-menu" aria-labelledby="manage-task">
-              <button class="dropdown-item">刪除所有待辦</button>
+              <button @click="deleteTask('allTask')" class="dropdown-item">
+                刪除所有待辦
+              </button>
               <button class="dropdown-item">清除所有記數</button>
               <button class="dropdown-item"></button>
             </div>
@@ -85,7 +88,7 @@
             </div>
           </div>
           <!-- 設定內容 -->
-          <form class="task-toggle" v-if="task.id === clickId">
+          <form class="edit-task" v-if="task.id === clickId">
             <!-- title -->
             <span> 待辦事項:</span>
             <input type="text" v-model="task.title" />
@@ -102,12 +105,40 @@
               <textarea type="text" name="note" id="" />
             </div>
             <!-- 按鈕 -->
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-around">
+              <button @click="deleteTask(task.id)">刪除</button>
               <button class="mr-4" @click="toggleSetting('close')">取消</button>
               <button type="submit" class="mr-2 btn btn-primary">確認</button>
             </div>
           </form>
         </div>
+        <div>
+          <div @click="toggleSetting('new')">新增</div>
+        </div>
+        <!-- 新增 -->
+        <!-- 設定內容 -->
+        <form class="create-task" v-if="clickId === 'new'">
+          <!-- title -->
+          <span> 待辦事項:</span>
+          <input type="text" />
+          <!-- 計次 -->
+          <div>
+            <p>預計需要 幾個番茄時鐘</p>
+            <input type="number" min="1" />
+          </div>
+          <!-- note -->
+          <div>
+            <div>註解</div>
+            <textarea type="text" name="note" id="" />
+          </div>
+          <!-- 按鈕 -->
+          <div class="d-flex justify-content-around">
+            <button>刪除</button>
+            <button class="mr-4" @click="toggleSetting('close')">取消</button>
+            <button type="submit" class="mr-2 btn btn-primary">確認</button>
+          </div>
+        </form>
+        <!-- 新增-->
       </div>
     </div>
   </div>
@@ -116,6 +147,7 @@
 
 <script>
 import TimeSettingModal from "../components/TimeSettingModal.vue";
+// import { v4 as uuidv4 } from "uuid";
 
 export default {
   components: {
@@ -128,16 +160,25 @@ export default {
           title: "待辦事項1",
           id: 1,
           complete: false,
+          note: "",
+          estimatedTimes: 1,
+          executedTimes: 0,
         },
         {
           title: "待辦事項222",
           id: 2,
           complete: false,
+          note: "",
+          estimatedTimes: 1,
+          executedTimes: 0,
         },
         {
           title: "待辦事項3333",
           id: 3,
           complete: false,
+          note: "",
+          estimatedTimes: 1,
+          executedTimes: 0,
         },
       ],
       countdownState: "pause",
@@ -151,7 +192,7 @@ export default {
       times: 1,
       countdownMode: "focus",
       setIntervalId: -1,
-      clickId: 1,
+      clickId: "close",
     };
   },
   methods: {
@@ -198,14 +239,24 @@ export default {
         this.chooseCountdown(this.countdownSetting.focusTime, "focus");
       }
     },
-    toggleSetting(taskid) {
-      this.clickId = taskid;
+    toggleSetting(taskId) {
+      this.clickId = taskId;
+    },
+    deleteTask(taskId) {
+      if (taskId === "allTask") {
+        this.tasks = [];
+      } else {
+        console.log("in");
+        this.tasks = this.tasks.filter((task) => {
+          return task.id !== taskId;
+        });
+      }
     },
   },
   // 原本 預計 用 filters 功能 讓 秒數=0 ; 回傳 00
   // 後續想到 可以在 倒數計時的功能裡面 達成這項功能
   filters: {
-    changeSecondDisplay(n) {
+    changeNumberDisplay(n) {
       if (n === 0) {
         return "00";
       } else return n;
@@ -217,6 +268,7 @@ export default {
 <style>
 .body {
   background-color: brown;
+  min-height: 100vh;
 }
 
 .main {
