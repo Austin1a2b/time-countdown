@@ -44,7 +44,7 @@
           開始
         </button>
         <button
-          @click.stop.prevent="pauseCountdown(setIntervalId)"
+          @click.stop.prevent="pauseCountdown()"
           v-else
           class="pause"
           :class="countdownMode"
@@ -68,6 +68,13 @@
         @change-execute-task="changeExecuteTask"
         @after-clear-executed="afterClearExecuted"
       />
+
+      <Alert
+        :showModal="showModal"
+        :wattingDecision="wattingDecision"
+        @close-alert="showModal = false"
+        @confirm-switch="afterconfirm"
+      />
     </div>
   </div>
 </template>
@@ -76,12 +83,14 @@
 <script>
 import TimeSettingModal from "../components/TimeSettingModal.vue";
 import TaskList from "../components/TaskList.vue";
+import Alert from "../components/Alert.vue";
 import { v4 as uuidv4 } from "uuid";
 
 export default {
   components: {
     TimeSettingModal,
     TaskList,
+    Alert,
   },
   data() {
     return {
@@ -110,21 +119,25 @@ export default {
       executeTaskId: "1",
       soundsrc:
         "https://downsc.chinaz.net/Files/DownLoad/sound1/202203/y682.wav",
+      showModal: false,
+      wattingDecision: "",
     };
   },
   methods: {
     chooseCountdown(mode) {
       if (this.countdownState === "start") {
-        console.log("要設計提醒視窗");
+        this.showModal = true;
+        this.wattingDecision = mode;
+        return;
       }
       this.countdownMode = mode;
       this.countdownSeconds = 0;
       if (mode === "focus") {
-        this.countdownMinutes = this.countdownSetting.focusTime;
+        return (this.countdownMinutes = this.countdownSetting.focusTime);
       } else if (mode === "shortBreak") {
-        this.countdownMinutes = this.countdownSetting.shortBreakTime;
+        return (this.countdownMinutes = this.countdownSetting.shortBreakTime);
       } else {
-        this.countdownMinutes = this.countdownSetting.longBreakTime;
+        return (this.countdownMinutes = this.countdownSetting.longBreakTime);
       }
     },
     afterSaveSetting(setting) {
@@ -145,8 +158,8 @@ export default {
         }
       }, 1000);
     },
-    pauseCountdown(id) {
-      clearInterval(id);
+    pauseCountdown() {
+      clearInterval(this.setIntervalId);
       this.countdownState = "pause";
     },
     timeIsUp() {
@@ -229,6 +242,11 @@ export default {
         sound.play();
       }, 1700);
       sound.play();
+    },
+    afterconfirm(mode) {
+      this.showModal = false;
+      this.pauseCountdown();
+      this.chooseCountdown(mode);
     },
   },
   filters: {
