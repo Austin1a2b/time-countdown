@@ -1,41 +1,54 @@
 <template>
-  <div class="body">
+  <div class="content" :class="countdownMode">
     <div class="main">
-      <div class="pt-5 d-flex justify-content-around change-time-countdown">
+      <div class="pt-4 d-flex justify-content-around change-time-countdown">
         <button
           type="button"
-          class="btn btn-outline-info"
+          class="mode-btn"
           @click="chooseCountdown('focus')"
+          :class="{ 'mode-chosen': countdownMode === 'focus' }"
         >
           專注時間
         </button>
         <button
           type="button"
-          class="btn btn-outline-info"
+          class="mode-btn"
           @click="chooseCountdown('shortBreak')"
+          :class="{ 'mode-chosen': countdownMode === 'shortBreak' }"
         >
           小休息時間
         </button>
         <button
           type="button"
-          class="btn btn-outline-info"
+          class="mode-btn"
           @click="chooseCountdown('longBreak')"
+          :class="{ 'mode-chosen': countdownMode === 'longBreak' }"
         >
           長休息時間
         </button>
       </div>
-      <div class="display-countdown">
-        {{ countdownMinutes | changeNumberDisplay }}:
-        {{ countdownSeconds | changeNumberDisplay }}
+      <div class="display-countdown mt-3">
+        <div>
+          {{ countdownMinutes | changeNumberDisplay }}:{{
+            countdownSeconds | changeNumberDisplay
+          }}
+        </div>
       </div>
-      <div class="d-flex justify-content-around">
+      <div class="d-flex justify-content-around align-self-center mt-3">
         <button
           @click.stop.prevent="startCountdown"
           v-if="countdownState === 'pause'"
+          class="start"
+          :class="countdownMode"
         >
           開始
         </button>
-        <button @click.stop.prevent="pauseCountdown(setIntervalId)" v-else>
+        <button
+          @click.stop.prevent="pauseCountdown(setIntervalId)"
+          v-else
+          class="pause"
+          :class="countdownMode"
+        >
           暫停
         </button>
         <TimeSettingModal
@@ -44,8 +57,8 @@
         />
       </div>
 
-      <div>專注次數 {{ times }}</div>
-      
+      <div class="times">專注次數#{{ times }}</div>
+
       <TaskList
         :tasks="tasks"
         :executeTaskId="executeTaskId"
@@ -53,6 +66,7 @@
         @after-create-task="afterCreateTask"
         @after-edit-task="afterEditTask"
         @change-execute-task="changeExecuteTask"
+        @after-clear-executed="afterClearExecuted"
       />
     </div>
   </div>
@@ -73,28 +87,12 @@ export default {
     return {
       tasks: [
         {
-          title: "待辦事項1",
+          title: "歡迎使用 ; 這邊是顯示待辦事項名稱",
           id: "1",
-          complete: true,
+          complete: false,
           estimatedTimes: 3,
           executedTimes: 1,
-          note: "內容長一點 測試換行 與版面-----內容長一點 測試換行 與版面內容長一點 測試換行 與版面內容長一點 測試換行 與版面內容長一點 測試換行 與版面內容長一點 測試換行 與版面內容長一點 測試換行 與版面內容長一點 測試換行 與版面",
-        },
-        {
-          title: "待辦事項222",
-          id: "2",
-          complete: false,
-          estimatedTimes: 4,
-          executedTimes: 2,
-          note: "這邊是 註解 2",
-        },
-        {
-          title: "待辦事項3333",
-          id: "3",
-          complete: false,
-          estimatedTimes: 5,
-          executedTimes: 2,
-          note: "這邊是 註解 3",
+          note: "這邊是顯示 備註",
         },
       ],
       countdownState: "pause",
@@ -108,7 +106,7 @@ export default {
       times: 1,
       countdownMode: "focus",
       setIntervalId: -1,
-      executeTaskId: "-1",
+      executeTaskId: "1",
     };
   },
   methods: {
@@ -142,7 +140,7 @@ export default {
           this.countdownState = "pause";
           this.timeIsUp();
         }
-      }, 100);
+      }, 1000);
     },
     pauseCountdown(id) {
       clearInterval(id);
@@ -210,6 +208,17 @@ export default {
         }
       });
     },
+    afterClearExecuted() {
+      this.tasks = this.tasks.map((task) => {
+        return (task = {
+          ...task,
+          executedTimes: 0,
+        });
+      });
+    },
+    saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(this.tasks));
+    },
   },
   filters: {
     changeNumberDisplay(n) {
@@ -222,25 +231,49 @@ export default {
     countdownSetting: {
       handler: function () {
         this.chooseCountdown(this.countdownMode);
+        localStorage.setItem(
+          "countdownSetting",
+          JSON.stringify(this.countdownSetting)
+        );
+      },
+      deep: true,
+    },
+    tasks: {
+      handler: function () {
+        this.saveTasks();
       },
       deep: true,
     },
   },
   created() {
-    this.executeTaskId = this.tasks[0].id;
+    if (Array.isArray(JSON.parse(localStorage.getItem("tasks")))) {
+      this.tasks = JSON.parse(localStorage.getItem("tasks"));
+      if (this.tasks.length !== 0) {
+        this.executeTaskId = this.tasks[0].id;
+      }
+    }
+    if (JSON.parse(localStorage.getItem("countdownSetting"))) {
+      this.countdownSetting = JSON.parse(
+        localStorage.getItem("countdownSetting")
+      );
+    }
+    console.log(JSON.parse(localStorage.getItem("countdownSetting")));
   },
 };
 </script>
 
 <style>
-.body {
-  background-color: brown;
+button:focus {
+  outline: none;
+}
+
+.content {
   min-height: 100vh;
 }
 
 .main {
   margin: 0 auto;
-  width: 400px;
+  max-width: 350px;
 }
 
 .display-countdown {
@@ -249,5 +282,78 @@ export default {
   font-size: 120px;
   font-weight: bold;
   text-align: center;
+  color: white;
+}
+
+.mode-btn {
+  background-color: rgba(255, 255, 255, 0);
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.mode-chosen {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.display-countdown {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.focus {
+  background-color: rgb(217, 85, 80);
+  color: rgb(217, 85, 80);
+}
+
+.shortBreak {
+  background-color: rgb(76, 145, 149);
+  color: rgb(76, 145, 149);
+}
+
+.longBreak {
+  background-color: rgb(69, 124, 163);
+  color: rgb(69, 124, 163);
+}
+
+.start,
+.pause {
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  width: 150px;
+  height: 35px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.start {
+  box-shadow: 0px 5px 1px #dddddd;
+}
+
+.pause {
+  margin-top: 5px;
+  margin-bottom: -5px;
+}
+
+.times {
+  width: 150px;
+  margin: 25px auto 20px;
+  text-align: center;
+  color: white;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media screen and (min-width: 500px) {
+  .main {
+    max-width: 450px;
+  }
+  .mode-btn {
+    width: 27%;
+  }
 }
 </style>

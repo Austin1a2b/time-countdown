@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="modal-wrapper">
     <button
       type="button"
-      class="btn btn-primary"
+      class="button-setting"
       data-toggle="modal"
       data-target="#modal-set-time"
     >
@@ -32,26 +32,32 @@
             </button>
           </div>
           <form @submit.stop.prevent="saveSetting">
-            <div class="modal-body d-flex space-around">
+            <div class="modal-body d-flex justify-content-around">
               <div>
-                專注<input
-                  type="text"
+                <div>專注</div>
+                <input
+                  type="number"
+                  min="1"
                   name="focusTime"
                   :value="countdownSetting.focusTime"
                   class="focus-minutes"
                 />
               </div>
               <div>
-                小休息時間<input
-                  type="text"
+                <div>小休息時間</div>
+                <input
+                  type="number"
+                  min="1"
                   name="shortBreakTime"
                   :value="countdownSetting.shortBreakTime"
                   class="short-break-minutes"
                 />
               </div>
               <div>
-                長休息時間<input
-                  type="text"
+                <div>長休息時間</div>
+                <input
+                  type="number"
+                  min="1"
                   name="longBreakTime"
                   :value="countdownSetting.longBreakTime"
                   class="long-break-minutes"
@@ -59,16 +65,10 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                關閉
               </button>
-              <button type="submit" class="btn btn-primary">
-                Save changes
-              </button>
+              <button type="submit" class="ml-5 btn btn-primary">儲存</button>
             </div>
           </form>
         </div>
@@ -95,7 +95,6 @@ export default {
     },
   },
   methods: {
-    //後續 用儲存表單方式處理 (而非用 v-model 處理) , & 設定功能 將資料 傳到父層
     saveSetting(e) {
       const form = e.target;
       const formData = new FormData(form);
@@ -105,3 +104,30 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+input {
+  width: 80px;
+  background-color: rgb(233, 231, 231);
+  border: none;
+}
+
+input:focus {
+  background-color: rgb(209, 198, 39);
+  outline: none;
+}
+
+.modal-wrapper {
+  color: black;
+}
+.button-setting {
+  background-color: #6c757d;
+  color: aliceblue;
+  border: none;
+  border-radius: 5px;
+  width: 150px;
+  font-weight: bold;
+  font-size: 20px;
+  height: 35px;
+}
+</style>
