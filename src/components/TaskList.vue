@@ -61,7 +61,7 @@
           </div>
         </div>
 
-        <div>
+        <div v-if="!(task.note === '')">
           <p :class="{ iscomplete: task.complete }" class="note-display">
             {{ task.note }}
           </p>
@@ -148,6 +148,7 @@
             type="text"
             name="title"
             placeholder="輸入待辦事項"
+            required="required"
           />
         </div>
         <div class="input-times-wrapper">
@@ -159,6 +160,7 @@
             class="input-times"
             name="estimatedTimes"
             min="1"
+            value="1"
           />
         </div>
         <div>
@@ -199,7 +201,6 @@ export default {
   data() {
     return {
       clickId: "close",
-      publicPath: process.env.BASE_URL,
     };
   },
   methods: {

@@ -87,12 +87,13 @@ export default {
     return {
       tasks: [
         {
-          title: "歡迎使用 ; 這邊是顯示待辦事項名稱",
+          title:
+            "歡迎使用;這是範例 此處顯示待辦事項名稱 ;右邊按鈕可進入 編輯頁面",
           id: "1",
           complete: false,
           estimatedTimes: 3,
           executedTimes: 1,
-          note: "這邊是顯示 備註",
+          note: "此處 是顯示備註內容 ",
         },
       ],
       countdownState: "pause",
@@ -107,6 +108,8 @@ export default {
       countdownMode: "focus",
       setIntervalId: -1,
       executeTaskId: "1",
+      soundsrc:
+        "https://downsc.chinaz.net/Files/DownLoad/sound1/202203/y682.wav",
     };
   },
   methods: {
@@ -147,6 +150,7 @@ export default {
       this.countdownState = "pause";
     },
     timeIsUp() {
+      this.playbeep();
       if (this.countdownMode === "focus" && this.times % 4 !== 0) {
         this.times++;
         this.chooseCountdown("shortBreak");
@@ -219,6 +223,13 @@ export default {
     saveTasks() {
       localStorage.setItem("tasks", JSON.stringify(this.tasks));
     },
+    playbeep() {
+      let sound = new Audio(this.soundsrc);
+      setTimeout(() => {
+        sound.play();
+      }, 1700);
+      sound.play();
+    },
   },
   filters: {
     changeNumberDisplay(n) {
@@ -257,7 +268,6 @@ export default {
         localStorage.getItem("countdownSetting")
       );
     }
-    console.log(JSON.parse(localStorage.getItem("countdownSetting")));
   },
 };
 </script>

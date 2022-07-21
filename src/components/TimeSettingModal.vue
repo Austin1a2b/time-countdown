@@ -120,6 +120,7 @@ input:focus {
 .modal-wrapper {
   color: black;
 }
+
 .button-setting {
   background-color: #6c757d;
   color: aliceblue;
