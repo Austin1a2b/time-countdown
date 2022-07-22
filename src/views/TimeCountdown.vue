@@ -117,10 +117,9 @@ export default {
       countdownMode: "focus",
       setIntervalId: -1,
       executeTaskId: "1",
-      soundsrc:
-        "https://downsc.chinaz.net/Files/DownLoad/sound1/202203/y682.wav",
       showModal: false,
       wattingDecision: "",
+      soundsrc: require("../../public/sound/beep.wav"),
     };
   },
   methods: {
@@ -156,7 +155,7 @@ export default {
           this.countdownState = "pause";
           this.timeIsUp();
         }
-      }, 1000);
+      }, 100);
     },
     pauseCountdown() {
       clearInterval(this.setIntervalId);
