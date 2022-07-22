@@ -155,7 +155,7 @@ export default {
           this.countdownState = "pause";
           this.timeIsUp();
         }
-      }, 100);
+      }, 1000);
     },
     pauseCountdown() {
       clearInterval(this.setIntervalId);
