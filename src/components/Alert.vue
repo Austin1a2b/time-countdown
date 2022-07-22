@@ -3,21 +3,24 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div class="modal-body">
-          <slot name="body"> 計時正在倒數中 ; 是否切換計時模式 ?? </slot>
+          <div class="body">計時正在倒數中 ; 是否切換計時模式 ??</div>
         </div>
 
         <div class="modal-footer">
-          <slot name="footer">
+          <div class="footer">
             <button
-              class="modal-default-button"
+              class="modal-default-button confrim"
               @click="$emit('confirm-switch', wattingDecision)"
             >
-              確認切換
+              確認
             </button>
-            <button class="modal-default-button" @click="$emit('close-alert')">
+            <button
+              class="modal-default-button cancel"
+              @click="$emit('close-alert')"
+            >
               取消
             </button>
-          </slot>
+          </div>
         </div>
       </div>
     </div>
@@ -41,7 +44,7 @@ export default {
 <style scoped>
 .modal-mask {
   position: fixed;
-  z-index: 9998;
+  z-index: 9;
   top: 0;
   left: 0;
   width: 100%;
@@ -57,44 +60,38 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  width: 450px;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
-  font-family: Helvetica, Arial, sans-serif;
+  transition: all 0.4s ease;
 }
 
 .modal-body {
   margin: 20px 0;
+  color: black;
 }
 
 .modal-default-button {
   float: right;
+  border-radius: 5px;
+  height: 40px;
+  width: 70px;
 }
 
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-
-.modal-enter {
-  opacity: 0;
+.confrim {
+  margin-left: 30px;
+  background-color: rgb(34, 57, 229);
+  color: white;
+  border: 2px white solid;
+  outline: solid 2px rgb(34, 57, 229);
 }
 
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+.cancel {
+  background-color: rgba(0, 0, 0, 0);
+  border: 2px rgb(157, 157, 161) solid;
+  color: blue;
 }
 </style>
