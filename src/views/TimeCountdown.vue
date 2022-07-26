@@ -1,5 +1,8 @@
 <template>
   <div class="content" :class="countdownMode">
+    <div>
+      <Login />
+    </div>
     <div class="main">
       <div class="pt-4 d-flex justify-content-around change-time-countdown">
         <button
@@ -84,6 +87,7 @@
 import TimeSettingModal from "../components/TimeSettingModal.vue";
 import TaskList from "../components/TaskList.vue";
 import Alert from "../components/Alert.vue";
+import Login from "../components/Login.vue";
 import { v4 as uuidv4 } from "uuid";
 
 export default {
