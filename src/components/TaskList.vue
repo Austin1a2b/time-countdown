@@ -15,10 +15,10 @@
           管理列表
         </button>
         <div class="dropdown-menu" aria-labelledby="manage-task">
-          <button @click="deleteTask('allTask')" class="dropdown-item">
+          <button class="dropdown-item" @click="deleteTask('allTask')">
             刪除所有待辦
           </button>
-          <button @click="clearExecutedTimes" class="dropdown-item">
+          <button class="dropdown-item" @click="clearExecutedTimes">
             清除所有記數
           </button>
           <button class="dropdown-item"></button>
@@ -33,9 +33,9 @@
       :key="task.id"
     >
       <div
-        v-if="task.id !== clickId"
         class="task-list"
         :class="{ isexecute: executeTaskId === task.id }"
+        v-if="task.id !== clickId"
       >
         <div class="d-flex justify-content-between align-items-center">
           <div class="list-left d-flex justify-content-around">
@@ -62,7 +62,7 @@
         </div>
 
         <div v-if="!(task.note === '')">
-          <p :class="{ iscomplete: task.complete }" class="note-display">
+          <p class="note-display" :class="{ iscomplete: task.complete }">
             {{ task.note }}
           </p>
         </div>
@@ -71,9 +71,9 @@
       <!-- 編輯task -->
       <div
         class="edit-task-wrapper"
-        v-if="task.id === clickId"
         @submit.stop.prevent="editTask(task.id)"
         @click.stop=""
+        v-if="task.id === clickId"
       >
         <form id="edit-task">
           <!-- title -->
@@ -248,18 +248,18 @@ export default {
 }
 
 .head-wrapper {
-  color: white;
-  border-bottom: 1px white solid;
   padding-bottom: 10px;
+  border-bottom: 1px white solid;
+  color: white;
 }
 
 .task-list {
-  border-radius: 5px;
-  color: black;
   margin-top: 10px;
   padding: 10px 10px;
   border-left: 5px solid rgba(0, 0, 0, 0);
+  border-radius: 5px;
   background-color: rgb(250, 250, 250);
+  color: black;
 }
 
 .isexecute {
@@ -268,12 +268,12 @@ export default {
 
 .input-checkbox {
   -webkit-appearance: none;
-  border: 2px solid #aaaaaa;
-  border-radius: 13px;
+  position: relative;
   width: 26px;
   height: 26px;
   margin: auto 0;
-  position: relative;
+  border: 2px solid #aaaaaa;
+  border-radius: 13px;
 }
 
 .input-checkbox:hover {
@@ -285,13 +285,13 @@ export default {
 }
 
 .input-checkbox:checked::after {
-  content: "✓";
-  font-size: 21px;
-  font-weight: bold;
   position: absolute;
   left: 2px;
   top: -6px;
+  font-size: 21px;
+  font-weight: bold;
   color: white;
+  content: "✓";
 }
 
 .title {
@@ -314,28 +314,28 @@ export default {
 }
 
 .task-setting {
-  color: black;
-  background-image: url("../../public/img/tool.svg");
-  background-repeat: no-repeat;
   width: 20px;
   height: 20px;
+  background-image: url("../../public/img/tool.svg");
+  background-repeat: no-repeat;
+  color: black;
 }
 
 .note-display {
   margin: 10px 15px;
-  background-color: bisque;
-  border-radius: 5px;
   padding: 5px;
+  border-radius: 5px;
   word-wrap: break-word;
+  background-color: bisque;
 }
 
 .edit-task-wrapper,
 .create-task-wrapper {
-  background-color: rgb(255, 255, 255);
-  border-radius: 5px;
-  color: black;
   margin-top: 10px;
   padding: 20px 20px;
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
+  color: black;
 }
 
 .input-title-wrapper,
@@ -392,24 +392,24 @@ input::-webkit-inner-spin-button {
 }
 
 .cancel {
-  color: rgb(255, 255, 255);
   background-color: rgb(96, 96, 96);
+  color: rgb(255, 255, 255);
 }
 
 .confirm {
-  color: rgb(255, 255, 255);
   background-color: #007bff;
+  color: rgb(255, 255, 255);
 }
 
 .create-button {
-  margin-top: 10px;
   height: 60px;
-  background-color: rgba(0, 0, 0, 0);
-  border: dashed 2px #ffffff73;
-  border-radius: 5px;
-  color: white;
+  margin-top: 10px;
   text-align: center;
   vertical-align: center;
+  border: dashed 2px #ffffff73;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
 }
 
 .create-button > span {

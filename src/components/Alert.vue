@@ -43,14 +43,14 @@ export default {
 
 <style scoped>
 .modal-mask {
+  display: table;
+  width: 100%;
+  height: 100%;
   position: fixed;
   z-index: 9;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  display: table;
   transition: opacity 0.3s ease;
 }
 
@@ -63,8 +63,8 @@ export default {
   width: 450px;
   margin: 0px auto;
   padding: 20px 30px;
-  background-color: #fff;
   border-radius: 5px;
+  background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.4s ease;
 }
@@ -75,23 +75,23 @@ export default {
 }
 
 .modal-default-button {
-  float: right;
-  border-radius: 5px;
   height: 40px;
   width: 70px;
+  float: right;
+  border-radius: 5px;
 }
 
 .confrim {
   margin-left: 30px;
+  border: 2px white solid;
   background-color: rgb(34, 57, 229);
   color: white;
-  border: 2px white solid;
   outline: solid 2px rgb(34, 57, 229);
 }
 
 .cancel {
-  background-color: rgba(0, 0, 0, 0);
   border: 2px rgb(157, 157, 161) solid;
+  background-color: rgba(0, 0, 0, 0);
   color: blue;
 }
 </style>
